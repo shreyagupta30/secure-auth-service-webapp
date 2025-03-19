@@ -1,132 +1,172 @@
-# Webapp application for CSYE-6225 Network Structures and Cloud computing (Spring 2024)
+# Cloud-Native User Authentication Service
 
-## Requriemnts to install this project
-- Pipenv 
-To install, run `pip install pipenv`
-- Fork the repository and then clone the repository
-To clone, run ` git clone <https://github.com/Spring2024-CSYE6225/webapp.git>`
-- Activate the environment at the root of the webapp folder
-` pipenv shell`
-- Install all the dependencies
-` pipenv install`
+A robust, cloud-native user authentication service built with Django REST Framework, designed for CSYE-6225 Network Structures and Cloud Computing (Spring 2024).
 
-## Creating a postgreSQL database
-On a new terminal window
-- Create a postgreSQL database
+## Features
 
+- User Authentication and Authorization
+- RESTful API Endpoints
+- PostgreSQL Database Integration
+- Health Check Endpoint
+- Cloud-Native Architecture
+- Serverless Microservice Support
+- Comprehensive Test Coverage
+
+## Tech Stack
+
+- **Backend Framework**: Django 4.x
+- **API Framework**: Django REST Framework
+- **Database**: PostgreSQL
+- **Authentication**: JWT (JSON Web Tokens)
+- **Cloud Services**: Google Cloud Platform
+- **Testing**: pytest
+- **Documentation**: drf-yasg (Swagger/OpenAPI)
+
+## Prerequisites
+
+- Python 3.x
+- Pipenv
+- PostgreSQL
+- Google Cloud Platform Account (for cloud deployment)
+
+## Installation
+
+1. Install Pipenv:
 ```bash
+pip install pipenv
+```
+
+2. Clone the repository:
+```bash
+git clone https://github.com/shreyagupta30/webapp-csye6225.git
+cd webapp-csye6225
+```
+
+3. Activate the virtual environment:
+```bash
+pipenv shell
+```
+
+4. Install dependencies:
+```bash
+pipenv install
+```
+
+## Database Setup
+
+1. Create a PostgreSQL database:
+```sql
 CREATE DATABASE your_database_name;
 ```
 
-- Grant all privileges to the user
-
-```bash
-GRANT ALL PRIVILEGES ON <your_database_name.> TO <your_username>;
+2. Grant privileges:
+```sql
+GRANT ALL PRIVILEGES ON your_database_name TO your_username;
 ```
 
-- Update all the information in an .env file
-    -  SAMPLE .env:
-
-    ```bash
-    DEBUG='True'
-    DB_HOST=localhost
-    DB_NAME=<test>
-    DB_USER=<test>
-    DB_PASSWORD=<test>
-    DB_PORT=5432
-    ```
-- Start your postgreSQL server
-
-## Run the application
-
-- Run all the migrations
+3. Configure environment variables:
+Create a `.env` file in the root directory:
 ```bash
- python manage.py makemigrations
+DEBUG='True'
+DB_HOST=localhost
+DB_NAME=<your_database_name>
+DB_USER=<your_username>
+DB_PASSWORD=<your_password>
+DB_PORT=5432
 ```
-now, 
-``` bash
+
+## Running the Application
+
+1. Apply database migrations:
+```bash
+python manage.py makemigrations
 python manage.py migrate
 ```
-- Run the server
+
+2. Start the development server:
 ```bash
 python manage.py runserver
 ```
 
-## Endpoints to get if the server connection is healthy
+## API Endpoints
 
-``` bash
+### Health Check
+```http
 GET /healthz
 ```
-This should return, 
-STATUS CODE 200 if the connection is healthy.
+Returns HTTP 200 if the service is healthy.
 
-## User auuthentication endpoints
+### User Authentication
 
-```bash
+#### Create User
+```http
 POST /v1/user
-```
-Body:
-```json
-{  
-    "username": "test@gmail.com",
-    "firstname":"tester",
-    "lastname":"tester",
-    "password":"password!!!"
-}
-```
+Content-Type: application/json
 
-Sample response:
-
-```bash
 {
-    "id": "49e5d3b6-62d9-441e-9cb6-a025ac92993d",
-    "username": "test@gmail.com",
-    "firstname": "tester",
-    "lastname": "tester",
-    "account_created": "2024-02-07T23:58:34.202651Z",
-    "account_updated": "2024-02-07T23:58:34.202665Z"
+    "username": "user@example.com",
+    "firstname": "John",
+    "lastname": "Doe",
+    "password": "secure_password"
 }
 ```
 
-```bash
+#### Get User Profile
+```http
 GET /v1/user/self
-```
-This is an authenticated route, the user must provide appropriate username and password to get response. 
-
-Sample response when authenticated:
-```bash
-{
-    "id": "49e5d3b6-62d9-441e-9cb6-a025ac92993d",
-    "username": "test@gmail.com",
-    "firstname": "shreya",
-    "lastname": "guptaaa",
-    "account_created": "2024-02-07T23:58:34.202651Z",
-    "account_updated": "2024-02-07T23:58:34.202665Z"
-}
+Authorization: Bearer <jwt_token>
 ```
 
-Sample response when unauthenticated:
-
-```bash
-{
-    "detail": "Authentication credentials were not provided."
-}
-```
-
-```bash
+#### Update User Profile
+```http
 PUT /v1/user/self
+Authorization: Bearer <jwt_token>
+Content-Type: application/json
+
+{
+    "firstname": "John",
+    "lastname": "Smith",
+    "password": "new_password"
+}
 ```
-This is an authenticated route, the user must be authenticated to modify only fields like 
-- password
-- firstname
-- lastname
 
-If the user tries to change fields like `username`, `account_created` and `account_updated` the status code `400 BAD REQUEST` is raised. 
+## Testing
 
+Run the test suite:
+```bash
+pytest
+```
 
-#References:
+## Cloud Deployment
 
-1- setup test for gh - https://github.com/marketplace/actions/setup-postgresql-for-linux-macos-windows
+The application is designed for cloud deployment with the following features:
+- Packer configuration for AMI creation
+- GitHub Actions for CI/CD
+- Serverless microservice support
+- Health check monitoring
 
+## Security Considerations
 
-> Note - This webapp also contains trigger for serverless microserver.
+- Passwords are hashed using bcrypt
+- JWT-based authentication
+- Environment variable configuration for sensitive data
+- Input validation and sanitization
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is part of the CSYE-6225 course at Northeastern University.
+
+## References
+
+- [Django Documentation](https://docs.djangoproject.com/)
+- [Django REST Framework](https://www.django-rest-framework.org/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Google Cloud Documentation](https://cloud.google.com/docs)
